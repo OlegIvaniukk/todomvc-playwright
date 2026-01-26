@@ -1,0 +1,53 @@
+name: Playwright Tests
+
+# Запуск на push у будь-яку гілку або PR
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x] # версія Node.js
+
+    steps:
+      # 1. Клонування репозиторію
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Налаштування Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # 3. Встановлення залежностей
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Встановлення браузерів Playwright
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # 5. Запуск ESLint перед тестами
+      - name: Run ESLint
+        run: npx eslint . --ext .ts
+        continue-on-error: false # блокує CI, якщо є помилки
+
+      # 6. Запуск тестів Playwright
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=html
+
+      # 7. Збір артефактів (наприклад, звіт Playwright HTML)
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
