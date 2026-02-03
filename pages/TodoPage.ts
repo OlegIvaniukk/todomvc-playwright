@@ -6,8 +6,8 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
 export class TodoPage {
   readonly page: Page;
-  readonly newTodoInput: Locator;
-  readonly todoItems: Locator;
+  readonly newTodoInput: Locator;  // поле вводу нової задачі
+  readonly todoItems: Locator;     // список всіх задач
 
   constructor(page: Page) {
     this.page = page;
